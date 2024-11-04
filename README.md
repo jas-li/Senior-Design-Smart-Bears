@@ -2,4 +2,5 @@
 Smart System for the Visually Impaired
 
 ## Object Detection
-- YOLO3 Pretrained Model: https://drive.google.com/drive/folders/1pNXnpgZHgF3hK5u3A770oh0gySt66psH?usp=sharing
+- Installed YOLO3 Pretrained Model at: https://drive.google.com/drive/folders/1pNXnpgZHgF3hK5u3A770oh0gySt66psH?usp=sharing
+  - Be sure to inclue the YOLO3 model in the same directory as the object detection script
