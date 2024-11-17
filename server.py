@@ -1,4 +1,5 @@
 import socket
+import random
 
 # Define server IP and port
 SERVER_HOST = '0.0.0.0'  
@@ -16,5 +17,5 @@ while True:
     print(f"Received message: {message.decode()} from {client_address}")
     
     # Optionally send a response to the client
-    response = "1"
+    response = str(random.randint(1, 2))
     udp_server_socket.sendto(response.encode(), client_address)

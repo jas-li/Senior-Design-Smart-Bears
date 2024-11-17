@@ -1,10 +1,31 @@
 import network
 import time
 import socket
-from machine import Pin
+import math
+from machine import Pin, PWM
 
-pin = Pin(15, Pin.OUT)
 
+def notification(pin):
+    for _ in range(3):
+        pin.on()   # Alternatively: pin.value(1)
+        time.sleep(.25)  # Keep it high for 1 second
+        pin.off()  # Alternatively: pin.value(0)
+        time.sleep(.1)  # Keep it low for 1 second
+        
+def loading(pin):
+    pwm = PWM(pin)
+    pwm.freq(50)
+    for _ in range(2):
+        for x in range(50):
+            duty_cycle = 256 + math.floor(256 * (1 + (math.sin(2 * math.pi * x / 50))))
+            pwm.duty(duty_cycle)
+            time.sleep(0.05)
+    pwm.duty(0)
+    
+    
+pin = Pin(14, Pin.OUT)
+pin.on()
+time.sleep(10)
 ssid = 'smartbears'
 password = ''
 
@@ -20,7 +41,7 @@ print("Connected to Wi-Fi!")
 print("IP address:", station.ifconfig()[0])
 
 # Define server IP and port
-SERVER_IP = '192.168.1.125'  # Replace with your server's IP address
+SERVER_IP = '192.168.1.101'  # Replace with your server's IP address
 SERVER_PORT = 12345
 
 # Create a UDP socket
@@ -38,13 +59,11 @@ print(f"Received from server: {response.decode()}")
 # Close the socket
 udp_client_socket.close()
 
-if response.decode() == '1':
-    pin.on()   # Alternatively: pin.value(1)
-    print("Pin is HIGH")
-    time.sleep(1)  # Keep it high for 1 second
+value = response.decode()
 
-    # Set the pin low (0V)
-    pin.off()  # Alternatively: pin.value(0)
-    print("Pin is LOW")
-    time.sleep(1)  # Keep it low for 1 second
+if value == '1':
+    loading(pin)
+elif value == '2':
+    notification(pin)
+
 
