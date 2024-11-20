@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebRTC Stream</title>
+</head>
+<body>
+    <video id="video" autoplay playsinline></video>
+    <script>
+        const pc = new RTCPeerConnection();
+        pc.ontrack = function(event) {
+            document.getElementById('video').srcObject = event.streams[0];
+        };
+
+        pc.createOffer({offerToReceiveVideo: true})
+            .then(offer => pc.setLocalDescription(offer))
+            .then(() => {
+                return fetch('http://192.168.1.101:8080/offer', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        sdp: pc.localDescription.sdp,
+                        type: pc.localDescription.type
+                    })
+                });
+            })
+            .then(response => response.json())
+            .then(answer => pc.setRemoteDescription(answer))
+            .catch(e => console.error(e));
+    </script>
+</body>
+</html>
