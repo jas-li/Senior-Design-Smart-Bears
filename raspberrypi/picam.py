@@ -27,7 +27,7 @@ def generate_frames():
     picam2.configure(camera_config)
     
     output = StreamingOutput()
-    encoder = JpegEncoder(quality=85)
+    encoder = JpegEncoder()
     picam2.start_recording(encoder, FileOutput(output))
 
     try:
