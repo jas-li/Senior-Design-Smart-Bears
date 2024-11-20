@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebRTC Raspberry Pi Camera Stream</title>
+</head>
+<body>
+    <video id="video" autoplay playsinline></video>
+    
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script>
+        const video = document.getElementById('video');
+        const pc = new RTCPeerConnection();
+
+        pc.ontrack = event => {
+            if (event.track.kind === 'video') {
+                video.srcObject = event.streams[0];
+            }
+        };
+
+        pc.addTransceiver('video', {direction: 'recvonly'});
+
+        pc.createOffer()
+            .then(offer => pc.setLocalDescription(offer))
+            .then(() => {
+                // Here you would typically send the offer to your signaling server
+                console.log('Offer created:', pc.localDescription);
+            });
+
+        // Simulating receiving an answer (you'd typically get this from your signaling server)
+        setTimeout(() => {
+            const answer = {
+                type: 'answer',
+                sdp: 'v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=msid-semantic: WMS\r\nm=video 9 UDP/TLS/RTP/SAVPF 96\r\nc=IN IP4 0.0.0.0\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:dummy\r\na=ice-pwd:dummy\r\na=fingerprint:sha-256 dummy\r\na=setup:actpass\r\na=mid:0\r\na=sendonly\r\na=rtpmap:96 H264/90000\r\na=rtcp-fb:96 nack\r\na=rtcp-fb:96 nack pli\r\na=rtcp-fb:96 ccm fir\r\na=fmtp:96 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f\r\n'
+            };
+            pc.setRemoteDescription(answer);
+        }, 1000);
+    </script>
+</body>
+</html>
+
