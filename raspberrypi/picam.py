@@ -21,13 +21,13 @@ def generate_frames():
     picam2 = Picamera2()
     # Optimize configuration for higher FPS
     camera_config = picam2.create_video_configuration(
-        main={"size": (1640, 1232), "format": "RGB888"},
-        controls={"FrameDurationLimits": (33333, 33333)}  # Set to ~30fps
+        main={"size": (1280, 720), "format": "YUV420"},
+        controls={"FrameDurationLimits": (33333, 33333)}  # ~30fps
     )
     picam2.configure(camera_config)
     
     output = StreamingOutput()
-    encoder = JpegEncoder()
+    encoder = JpegEncoder(quality=85)
     picam2.start_recording(encoder, FileOutput(output))
 
     try:
@@ -35,8 +35,8 @@ def generate_frames():
             with output.condition:
                 output.condition.wait()
                 frame = output.frame
-                yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                output.frame = None
+                yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
     finally:
         picam2.stop_recording()
 
@@ -46,4 +46,4 @@ def video_feed():
                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, threaded=True)
+    app.run(host='0.0.0.0', port=5000, threaded=True, debug=False)
