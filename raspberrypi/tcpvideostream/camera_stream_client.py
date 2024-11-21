@@ -45,6 +45,6 @@ def stream_to_tcp(host, port):
 
 if __name__ == '__main__':
     # Replace with the IP of the machine running the model and the desired port
-    SERVER_HOST = '192.168.x.x'  # Replace with server IP
+    SERVER_HOST = '192.168.1.101'  # Replace with server IP
     SERVER_PORT = 5001  # Replace with server port
     stream_to_tcp(SERVER_HOST, SERVER_PORT)
