@@ -20,12 +20,18 @@ class StreamingOutput(io.BufferedIOBase):
 def generate_frames():
     picam2 = Picamera2()
     # Optimize configuration for higher FPS
-    camera_config = picam2.create_video_configuration(
-        main={"size": (1280, 720), "format": "RGB888"},
-        controls={"FrameDurationLimits": (33333, 33333), "Rotation": 0}
+    # camera_config = picam2.create_video_configuration(
+    #     main={"size": (1280, 720), "format": "RGB888"},
+    #     controls={"FrameDurationLimits": (33333, 33333), "Rotation": 0}
+    # )
+    # picam2.configure(camera_config)
+
+    video_config = picam2.create_video_configuration(
+        sensor={"output_size": (2304, 1296)},
+        main={"size": (1536, 864)},
+        controls={"FrameRate": 56}
     )
-    picam2.configure(camera_config)
-    picam2.configure(rotation=90) 
+    picam2.configure(video_config)
     
     output = StreamingOutput()
     encoder = JpegEncoder()
