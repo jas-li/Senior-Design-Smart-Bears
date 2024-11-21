@@ -18,7 +18,7 @@ class StreamingOutput(io.BufferedIOBase):
 def stream_to_tcp(host, port):
     picam2 = Picamera2()
     camera_config = picam2.create_video_configuration(
-        main={"size": (1280, 720), "format": "YUV420"},
+        main={"size": (1280, 720), "format": "RGB888"},
         controls={"FrameDurationLimits": (33333, 33333)}  # ~30fps
     )
     picam2.configure(camera_config)
