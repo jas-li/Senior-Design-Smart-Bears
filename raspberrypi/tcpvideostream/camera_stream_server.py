@@ -1,6 +1,29 @@
 import socket
-import cv2
 import numpy as np
+
+import cvlib as cv
+from cvlib.object_detection import draw_bbox
+import cv2
+from cvlib.object_detection import YOLO
+
+import pyttsx3
+
+# YOLO configuration
+weights = '../../../Object-Detection-model/yolov3.weights'
+config = '../../../Object-Detection-model/yolov3.cfg'
+labels = '../../../Object-Detection-model/coco.names'
+yolo = YOLO(weights, config, labels)
+
+# Text-to-Speech
+tts_engine = pyttsx3.init()
+
+def announce_objects(labels_detected):
+    if labels_detected:
+        unique_labels = set(labels_detected)  # Avoid repeating labels
+        announcement = "I see " + ", ".join(unique_labels)
+        print(f"Announcement: {announcement}")
+        tts_engine.say(announcement)
+        tts_engine.runAndWait()
 
 def start_server(host, port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
@@ -33,8 +56,23 @@ def start_server(host, port):
                 
                 # Decode and process the frame
                 frame = cv2.imdecode(np.frombuffer(frame_data, np.uint8), cv2.IMREAD_COLOR)
+                
                 if frame is not None:
-                    cv2.imshow('Frame', frame)
+                    # Apply object detection
+                    bbox, label, conf = yolo.detect_objects(frame)
+                    print(bbox, label, conf)
+                    
+                    # Draw bounding box over detected objects
+                    try:
+                        out = draw_bbox(frame, bbox, label, conf)
+                    except ValueError as e:
+                        print(f"Error drawing bounding box: {e}")
+                        continue  # Skip to the next frame
+                    
+                    # Display output
+                    cv2.imshow("Real-time object detection", out)
+
+                    # Press "Q" to stop
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
 
