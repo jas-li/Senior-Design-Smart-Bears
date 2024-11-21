@@ -22,7 +22,7 @@ def generate_frames():
     # Optimize configuration for higher FPS
     camera_config = picam2.create_video_configuration(
         main={"size": (1280, 720), "format": "RGB888"},
-        controls={"FrameDurationLimits": (33333, 33333), "Rotation": 0}
+        controls={"FrameDurationLimits": (33333, 33333)}
     )
     picam2.configure(camera_config)
     
