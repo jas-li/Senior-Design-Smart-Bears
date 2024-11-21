@@ -17,13 +17,15 @@ yolo = YOLO(weights, config, labels)
 # Text-to-Speech
 tts_engine = pyttsx3.init()
 
+# TinyPico
+UDP_IP = "192.168.1.134"  # IP address of the MicroPython device
+UDP_PORT = 1234           # Port where the server is listening
+
 def announce_objects(labels_detected):
-    if labels_detected:
-        unique_labels = set(labels_detected)  # Avoid repeating labels
-        announcement = "I see " + ", ".join(unique_labels)
-        print(f"Announcement: {announcement}")
-        tts_engine.say(announcement)
-        tts_engine.runAndWait()
+    announcement = "I see " + labels_detected
+    print(f"Announcement: {announcement}")
+    tts_engine.say(announcement)
+    tts_engine.runAndWait()
 
 def start_server(host, port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
@@ -61,6 +63,16 @@ def start_server(host, port):
                     # Apply object detection
                     bbox, label, conf = yolo.detect_objects(frame)
                     print(bbox, label, conf)
+
+                    if conf and label and bbox:
+                        for i in range(len(conf)):
+                            if conf[i] > 0.96:
+                                if(label[i] == 'person'):
+                                    print("Saw a person")
+                                    tinypico = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                                    tinypico.sendto("person".encode(), (UDP_IP, UDP_PORT))
+                                announce_objects(label[i])
+                                break
                     
                     # Draw bounding box over detected objects
                     try:
