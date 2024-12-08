@@ -20,6 +20,6 @@ After running `picam.py`, you should be able to see the live feed from the PiCam
 
 ### Video Stream Communcation 
 
-Run 'camera_stream_client' on the raspberry Pi
+Run `camera_stream_client` on the raspberry Pi
 
-Run 'camera_stream_server' on your computer
+Run `camera_stream_server` on your computer
