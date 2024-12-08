@@ -10,6 +10,7 @@ To ssh into the Raspberry Pi Zero:
 
 ```
 ssh pi@192.168.1.101
+smartbears
 ```
 
 ### PiCam
