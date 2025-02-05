@@ -9,8 +9,7 @@ To check all devices on the network, connect to the wifi on your device, and go 
 To ssh into the Raspberry Pi Zero:
 
 ```
-ssh pi@192.168.1.101
-smartbears
+ssh pi@192.168.1.142
 ```
 
 ### PiCam
