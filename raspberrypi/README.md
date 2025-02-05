@@ -16,6 +16,25 @@ To ssh into the Raspberry Pi Zero:
 ssh pi@192.168.1.142
 ```
 
+You may get this error:
+
+```
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+```
+
+If so, try running:
+
+```
+ssh-keygen -R 192.168.1.142
+```
+
+Then, try to ssh into the pi again.
+
 ### PiCam
 
 After running `picam.py`, you should be able to see the live feed from the PiCam at: http://192.168.1.142:5000/video_feed
