@@ -18,7 +18,12 @@ class StreamingOutput(io.BufferedIOBase):
             self.condition.notify_all()
 
 def generate_frames():
-    picam2 = Picamera2()
+    available_cams = Picamera2.global_camera_info()
+    if not available_cams:
+        raise RuntimeError("No cameras detected. Please check that your camera is properly connected and enabled.")
+    
+    # Explicitly use camera index 0
+    picam2 = Picamera2(camera_num=0)
     # Optimize configuration for higher FPS
     camera_config = picam2.create_video_configuration(
         main={"size": (1280, 720), "format": "RGB888"},
