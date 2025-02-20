@@ -1,0 +1,9 @@
+bin/
+left/
+left_20/
+left_temp/
+lib/
+pyvenv.cfg
+right/
+right_20/
+right_temp
