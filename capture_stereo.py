@@ -44,6 +44,13 @@ while True:
     left_rectified = cv2.remap(left_frame_resized, map1_left, map2_left, cv2.INTER_LINEAR)
     right_rectified = cv2.remap(right_frame, map1_right, map2_right, cv2.INTER_LINEAR)
     
+
+    # Ensure both rectified images have the same size
+    h, w = right_rectified.shape[:2]
+    print(h, w)
+
+    left_rectified = cv2.resize(left_rectified, (w, h))
+
     # Convert to grayscale
     gray_left = cv2.cvtColor(left_rectified, cv2.COLOR_BGR2GRAY)
     gray_right = cv2.cvtColor(right_rectified, cv2.COLOR_BGR2GRAY)
