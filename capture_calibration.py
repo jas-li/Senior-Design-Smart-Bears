@@ -17,7 +17,7 @@ if not left_camera.isOpened() or not right_camera.isOpened():
     print("Error: Could not open one or both cameras.")
     exit()
 
-image_count = 0
+image_count = 32
 delay = 2  # Delay between captures in seconds
 
 print("Press 'c' to capture an image pair, 'q' to quit.")
