@@ -9,15 +9,15 @@ if not os.path.exists('right'):
     os.makedirs('right')
 
 # Initialize the cameras
-left_camera = cv2.VideoCapture(0)  # Adjust index if needed
-right_camera = cv2.VideoCapture(8)  # Adjust index if needed
+left_camera  = cv2.VideoCapture(0, cv2.CAP_V4L2)  # Adjust index if needed
+right_camera = cv2.VideoCapture(8, cv2.CAP_V4L2)  # Adjust index if needed
 
 # Check if cameras opened successfully
 if not left_camera.isOpened() or not right_camera.isOpened():
     print("Error: Could not open one or both cameras.")
     exit()
 
-image_count = 32
+image_count = 0
 delay = 2  # Delay between captures in seconds
 
 print("Press 'c' to capture an image pair, 'q' to quit.")
