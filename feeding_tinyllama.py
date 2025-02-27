@@ -12,16 +12,33 @@ whisper_process = subprocess.Popen(["./whisper-stream"],
                                   text=True,
                                   bufsize=1)
 
+system_prompt = "You are an assistant for visually impaired people. Help them understand their surroundings, identify objects, read text, or describe colors."
+
+# Send to llava
+response = client.chat(model="llava:7b", 
+    messages=[
+        {"role": "system", "content": system_prompt},
+    ],
+    options={
+        "num_ctx": 2048,  # Adjust context window
+        "num_gpu": 1,     # Ensure GPU usage if available
+        "num_thread": 4   # Adjust based on your CPU
+})
+
 # Function to process speech input
 def process_speech_input(text):
     # Check if query is relevant
-    system_prompt = "You are an assistant for visually impaired people. Determine if this query is relevant. Relevant queries include questions about surroundings, identifying objects, reading text, or describing colors. Respond with 'RELEVANT' or 'NOT RELEVANT' followed by your response."
     
-    # Send to TinyLlama
-    response = client.chat(model="tinyllama", messages=[
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": text}
-    ])
+    # Send to llava
+    response = client.chat(model="llava:7b", 
+        messages=[
+            {"role": "user", "content": text},
+        ],
+        options={
+            "num_ctx": 2048,  # Adjust context window
+            "num_gpu": 1,     # Ensure GPU usage if available
+            "num_thread": 4   # Adjust based on your CPU
+    })
     
     # Extract the response
     llm_response = response["message"]["content"]
