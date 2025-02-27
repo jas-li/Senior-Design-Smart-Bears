@@ -2,7 +2,7 @@ import io
 from picamera2 import Picamera2
 from picamera2.encoders import JpegEncoder
 from picamera2.outputs import FileOutput
-from flask import Flask, Response
+from flask import Flask, Response, render_template_string
 from threading import Condition
 
 app = Flask(__name__)
@@ -17,23 +17,47 @@ class StreamingOutput(io.BufferedIOBase):
             self.frame = buf
             self.condition.notify_all()
 
-def generate_frames():
-    available_cams = Picamera2.global_camera_info()
-    if not available_cams:
-        raise RuntimeError("No cameras detected. Please check that your camera is properly connected and enabled.")
-    
-    # Explicitly use camera index 0
-    picam2 = Picamera2(camera_num=0)
-    # Optimize configuration for higher FPS
-    camera_config = picam2.create_video_configuration(
-        main={"size": (1280, 720), "format": "RGB888"},
+# HTML for two video feeds
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dual Camera Stream</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .stream {
+            width: 640px;
+            height: 360px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img class="stream" src="{{ url_for('video_feed_0') }}">
+        <img class="stream" src="{{ url_for('video_feed_1') }}">
+    </div>
+</body>
+</html>
+"""
+
+def initialize_camera(camera_num):
+    picam = Picamera2(camera_num=camera_num)
+    camera_config = picam.create_video_configuration(
+        main={"size": (1920, 1080), "format": "RGB888"},
         controls={"FrameDurationLimits": (33333, 33333)}
     )
-    picam2.configure(camera_config)
-    
+    picam.configure(camera_config)
+    return picam
+
+def generate_frames(camera_num):
+    picam = initialize_camera(camera_num)
     output = StreamingOutput()
     encoder = JpegEncoder()
-    picam2.start_recording(encoder, FileOutput(output))
+    picam.start_recording(encoder, FileOutput(output))
 
     try:
         while True:
@@ -43,12 +67,27 @@ def generate_frames():
                 output.frame = None
                 yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
     finally:
-        picam2.stop_recording()
+        picam.stop_recording()
 
-@app.route('/video_feed')
-def video_feed():
-    return Response(generate_frames(),
+@app.route('/')
+def index():
+    return render_template_string(HTML_TEMPLATE)
+
+@app.route('/video_feed_0')
+def video_feed_0():
+    return Response(generate_frames(0),
+                   mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/video_feed_1')
+def video_feed_1():
+    return Response(generate_frames(1),
                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
+    # Check available cameras
+    available_cams = Picamera2.global_camera_info()
+    if len(available_cams) < 2:
+        raise RuntimeError(f"Not enough cameras detected. Found {len(available_cams)} camera(s). Please check that both cameras are properly connected and enabled.")
+    
     app.run(host='0.0.0.0', port=5000, threaded=True, debug=False)
+
