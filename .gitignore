@@ -2,11 +2,13 @@ bin/
 left/
 left_20/
 left_temp/
+left_27/
 lib/
 pyvenv.cfg
 right/
 right_20/
 right_temp
-
+right_27/
+.DS_Store
 models/
 pyvenv/
