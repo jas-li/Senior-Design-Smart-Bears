@@ -43,7 +43,7 @@ while True:
     if key == ord('c'):
         # Save images
         cv2.imwrite(f'left/image_{image_count:02d}.jpg', frame_left)
-        cv2.imwrite(f'right/image_{image_count:02d}.jpg', frame_right)
+        # cv2.imwrite(f'right/image_{image_count:02d}.jpg', frame_right)
         print(f"Saved image pair {image_count}")
         image_count += 1
         time.sleep(delay)  # Wait before next capture
@@ -56,3 +56,4 @@ right_camera.release()
 cv2.destroyAllWindows()
 
 print(f"Captured {image_count} image pairs.")
+
