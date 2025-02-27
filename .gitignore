@@ -12,3 +12,4 @@ right_27/
 .DS_Store
 models/
 .env
+pyenv/
