@@ -7,3 +7,5 @@ pyvenv.cfg
 right/
 right_20/
 right_temp
+
+models/
