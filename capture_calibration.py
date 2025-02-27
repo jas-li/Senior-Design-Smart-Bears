@@ -10,7 +10,7 @@ if not os.path.exists('right'):
 
 # Initialize the cameras
 left_camera = cv2.VideoCapture(0)  # Adjust index if needed
-right_camera = cv2.VideoCapture(1)  # Adjust index if needed
+right_camera = cv2.VideoCapture(8)  # Adjust index if needed
 
 # Check if cameras opened successfully
 if not left_camera.isOpened() or not right_camera.isOpened():
@@ -27,6 +27,10 @@ while True:
     ret_left, frame_left = left_camera.read()
     ret_right, frame_right = right_camera.read()
 
+    if not ret_left:
+      print("Error: Could not read left.")
+    if not ret_right:
+      print("Error: Could not read right.")
     if not ret_left or not ret_right:
         print("Error: Could not read frame from one or both cameras.")
         break
