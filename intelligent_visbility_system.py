@@ -2,10 +2,6 @@ from machine import ADC, Pin, PWM
 import time
 import math
 
-# Helper function for mapping values
-def map_range(x, in_min, in_max, out_min, out_max):
-    return (x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min
-
 # Set up the ADC for the photoresistor on pin IO33
 ldr = ADC(Pin(33))
 ldr.atten(ADC.ATTN_11DB)  # Full range: 3.3v
