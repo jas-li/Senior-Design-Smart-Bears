@@ -1,9 +1,14 @@
 from machine import Pin, Timer
 import time
+import network
 import usocket as socket
 
+# WiFi credentials
+WIFI_SSID = "smartbears"
+WIFI_PASSWORD = ""
+
 # Server configuration
-SERVER_IP = "192.168.1.142"  # pi ip address
+SERVER_IP = "192.168.1.142"  # Raspberry Pi's IP
 SERVER_PORT = 12345
 
 class DebouncedButton:
@@ -20,40 +25,45 @@ class DebouncedButton:
         current_state = self.pin.value()
         current_time = time.ticks_ms()
         
-        # Check if the state has changed
         if current_state != self.last_state:
             self.last_state = current_state
             self.last_change_time = current_time
             
-        # Check if state is stable for debounce period
         if time.ticks_diff(current_time, self.last_change_time) > self.debounce_ms:
-            # If state is stable and different from previous stable state
             if current_state != self.stable_state:
                 self.stable_state = current_state
-                # For PULL_UP, 0 means pressed
-                if self.stable_state == 0:
+                if self.stable_state == 0:  # Pressed (assuming PULL_UP)
                     if not self.triggered:
                         self.triggered = True
                         return True
                 else:
-                    # Button released, reset triggered flag
                     self.triggered = False
-                    
         return False
+
+# Connect to WiFi
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+if not wlan.isconnected():
+    print("Connecting to WiFi...")
+    wlan.connect(WIFI_SSID, WIFI_PASSWORD)
+    while not wlan.isconnected():
+        time.sleep(0.5)
+print("Connected to WiFi:", wlan.ifconfig())
 
 # Create UDP socket
 udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+# print(f"Socket created to UDP server {SERVER_IP}:{SERVER_PORT}")
 
-# Create a debounced button on pin 20
-button = DebouncedButton(20)
+# Create button on pin 20
+button = DebouncedButton(14)
 
 while True:
     if button.is_pressed():
-        print("Button pressed!")
+        print("Button pressed - sending notification")
         try:
             # Send message to Raspberry Pi
-            udp_socket.sendto(b"BUTTON_PRESSED", (SERVER_IP, SERVER_PORT))
+            udp_socket.sendto(b"Button pressed", (SERVER_IP, SERVER_PORT))
         except Exception as e:
             print("Error sending message:", e)
     
-    time.sleep(0.01)  # Small delay to prevent CPU hogging
+    time.sleep(0.01)
