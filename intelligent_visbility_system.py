@@ -3,12 +3,12 @@ import time
 import math
 
 # Set up the ADC for the photoresistor on pin IO33
-ldr = ADC(Pin(33))
+ldr = ADC(Pin(32))
 ldr.atten(ADC.ATTN_11DB)  # Full range: 3.3v
 led_brightness = 0
 
 # Set up PWM for the LED on pin IO14
-led = PWM(Pin(14))
+led = PWM(Pin(26))
 led.freq(1000)  # Set PWM frequency to 1kHz
 
 # Define thresholds for light sensitivity
@@ -34,6 +34,7 @@ while True:
         led_brightness = (math.sin(t) + 1) * 511
         print(f"PULSING: Raw Value: {raw_value}, LED Brightness: {led_brightness}")
     else:
+        print(f"Bright Room: Raw Value: {raw_value}, LED Brightness: {led_brightness}")
         led_brightness = MIN_BRIGHTNESS
     
     led.duty(int(led_brightness))
