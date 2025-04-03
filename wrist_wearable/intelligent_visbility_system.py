@@ -36,6 +36,7 @@ while True:
     else:
         print(f"Bright Room: Raw Value: {raw_value}, LED Brightness: {led_brightness}")
         led_brightness = MIN_BRIGHTNESS
+        print(f"PULSING2222222222: Raw Value: {raw_value}")
     
     led.duty(int(led_brightness))
     time.sleep(0.05)
