@@ -77,7 +77,7 @@ def update_gradient():
 def handle_vibration(response):
     global awaiting_response
     
-    if response == b'HIGH':
+    if response == 'UNSAFE':
         # Three vibration bursts with pauses
         for i in range(2):
             vibrator.duty(512)  # Strong vibration
@@ -86,7 +86,7 @@ def handle_vibration(response):
             if i < 1:  # No pause after last iteration
                 time.sleep(0.5)
                 
-    elif response == b'LOW':
+    else:
         # Single vibration as before
         vibrator.duty(256)
         time.sleep(1)
@@ -111,7 +111,7 @@ def check_messages():
         data, addr = udp_socket.recvfrom(1024)
         if data and awaiting_response:
             print("Received:", data.decode())
-            handle_vibration(b"HIGH")
+            handle_vibration(data.decode())
     except:
         pass
 
