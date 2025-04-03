@@ -34,6 +34,7 @@ while True:
         led_brightness = (math.sin(t) + 1) * 511
         print(f"PULSING: Raw Value: {raw_value}, LED Brightness: {led_brightness}")
     else:
+        print(f"Bright Room: Raw Value: {raw_value}, LED Brightness: {led_brightness}")
         led_brightness = MIN_BRIGHTNESS
         print(f"PULSING2222222222: Raw Value: {raw_value}")
     
