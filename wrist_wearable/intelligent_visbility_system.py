@@ -8,7 +8,7 @@ ldr.atten(ADC.ATTN_11DB)  # Full range: 3.3v
 led_brightness = 0
 
 # Set up PWM for the LED on pin IO14
-led = PWM(Pin(26))
+led = PWM(Pin(4))
 led.freq(1000)  # Set PWM frequency to 1kHz
 
 # Define thresholds for light sensitivity
