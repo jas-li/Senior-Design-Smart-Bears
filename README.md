@@ -37,3 +37,5 @@ Run this command any time you want to reconnect the headset:
 bluetoothctl connect 41:42:D4:02:07:00
 ```
 
+![Smart System Diagram](./Smart_System_Diagram.png)
+
