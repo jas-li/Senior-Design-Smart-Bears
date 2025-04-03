@@ -8,7 +8,7 @@ import math
 # Photoresistor setup
 ldr = ADC(Pin(32))
 ldr.atten(ADC.ATTN_11DB)
-led = PWM(Pin(26))
+led = PWM(Pin(27))
 led.freq(1000)
 
 # Light thresholds
@@ -109,9 +109,9 @@ def check_button():
 def check_messages():
     try:
         data, addr = udp_socket.recvfrom(1024)
-        if data in [b'HIGH', b'LOW'] and awaiting_response:
+        if data and awaiting_response:
             print("Received:", data.decode())
-            handle_vibration(data)
+            handle_vibration(b"HIGH")
     except:
         pass
 
@@ -121,3 +121,4 @@ while True:
     update_gradient()    # Photoresistor/LED system
     check_button()       # Button handling
     check_messages()     # Network response handling
+
