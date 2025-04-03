@@ -1,21 +1,29 @@
 import socket
-import random
+import time
+import subprocess
 
-# Define server IP and port
-SERVER_HOST = '192.168.1.142'  # pi ip address
-SERVER_PORT = 12345      
+# UDP Setup
+UDP_IP = ''
+UDP_PORT = 12345
 
-# Create UDP socket
-udp_server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-udp_server_socket.bind((SERVER_HOST, SERVER_PORT))
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind((UDP_IP, UDP_PORT))
 
-print(f"UDP server listening on {SERVER_HOST}:{SERVER_PORT}")
+print(f"Listening on port {UDP_PORT}")
 
-# Listen for incoming messages
 while True:
-    message, client_address = udp_server_socket.recvfrom(1024)  # Buffer size of 1024 bytes
-    print(f"Received message: {message.decode()} from {client_address}")
-    
-    # Optionally send a response to the client
-    response = "Message received"
-    udp_server_socket.sendto(response.encode(), client_address)
+    data, addr = sock.recvfrom(1024)
+    if data == b'BUTTON_PRESSED':
+        print("Received button press - processing...")
+        
+        # Run tempcommunication.py and capture output
+        try:
+            result = subprocess.check_output(['python3', 'tempcommunication.py'])
+            response = result.strip().decode().upper()
+        except Exception as e:
+            response = 'ERROR'
+            print(f"Script failed: {e}")
+
+        # Send result back to ESP
+        sock.sendto(response.encode(), (addr[0], 54321))
+        print(f"Sent response: {response}")
