@@ -7,8 +7,8 @@ import math
 # ---------- Photoresistor/LED Configuration ----------
 # Photoresistor setup
 ldr = ADC(Pin(32))
-  ldr.atten(ADC.ATTN_11DB)
-led = PWM(Pin(26))
+ldr.atten(ADC.ATTN_11DB)
+led = PWM(Pin(27))
 led.freq(1000)
 
 # Light thresholds
@@ -77,7 +77,7 @@ def update_gradient():
 def handle_vibration(response):
     global awaiting_response
     
-    if response == b'HIGH':
+    if response == 'UNSAFE':
         # Three vibration bursts with pauses
         for i in range(2):
             vibrator.duty(512)  # Strong vibration
@@ -86,7 +86,7 @@ def handle_vibration(response):
             if i < 1:  # No pause after last iteration
                 time.sleep(0.5)
                 
-    elif response == b'LOW':
+    else:
         # Single vibration as before
         vibrator.duty(256)
         time.sleep(1)
@@ -109,9 +109,9 @@ def check_button():
 def check_messages():
     try:
         data, addr = udp_socket.recvfrom(1024)
-        if data in [b'HIGH', b'LOW'] and awaiting_response:
+        if data and awaiting_response:
             print("Received:", data.decode())
-            handle_vibration(data)
+            handle_vibration(data.decode())
     except:
         pass
 
@@ -121,3 +121,4 @@ while True:
     update_gradient()    # Photoresistor/LED system
     check_button()       # Button handling
     check_messages()     # Network response handling
+
