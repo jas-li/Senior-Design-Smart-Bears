@@ -20,10 +20,8 @@ imgpoints_left = []  # 2D points in left image plane
 imgpoints_right = []  # 2D points in right image plane
 
 # Get list of calibration images
-left_images = glob.glob('left_27/*.jpg')
-right_images = glob.glob('right_27/*.jpg')
-# left_images = glob.glob('left_temp/*.jpg')
-# right_images = glob.glob('right_temp/*.jpg')
+left_images = glob.glob('../../left/*.jpg')
+right_images = glob.glob('../../right/*.jpg')
 
 for left_img, right_img in zip(left_images, right_images):
     img_left = cv2.imread(left_img)

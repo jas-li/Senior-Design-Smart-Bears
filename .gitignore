@@ -14,3 +14,4 @@ models/
 .env
 pyenv/
 models/
+*.npz
