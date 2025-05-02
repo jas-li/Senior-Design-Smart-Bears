@@ -21,8 +21,8 @@ print(f"Listening on port {UDP_PORT}")
 
 # Initialize video captures
 print("Initializing video captures")
-cap_left = cv2.VideoCapture(2)  # Adjust index if needed
-cap_right = cv2.VideoCapture(0)  # Adjust index if needed
+cap_left = cv2.VideoCapture(0)  # Adjust index if needed
+cap_right = cv2.VideoCapture(2)  # Adjust index if needed
 
 # Set resolution for both cameras
 width, height = 1920, 1080
@@ -35,7 +35,7 @@ cap_right.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
 # Initialize stereo
 # Load calibration data (you need to perform calibration beforehand)
-calibration_data = np.load('/home/pi/Senior-Design-Smart-Bears/stereo_calibration.npz')
+calibration_data = np.load('/home/pi/Senior-Design-Smart-Bears/camera_calibration/predefined_stereo_calibration.npz')
 camera_matrix_left = calibration_data['camera_matrix_left']
 dist_coeffs_left = calibration_data['dist_coeffs_left']
 camera_matrix_right = calibration_data['camera_matrix_right']
@@ -74,7 +74,8 @@ You are always provided with:
 2. A depth map image showing relative distances (red = close, blue = far).
 
 First use the regular color image to identify objects and understand what is in the user's view.
-Next, if you do identify objects, use the depth mapping image with depth mapping outlines to understand the relative distances of the objects. If there is not enough information in the depth map or it is too noisy, disregard the depth mapping image when performing the following task.
+Next, check if the depth map has useful information. If there is not enough information in the depth map or it is too noisy, disregard the depth mapping image when performing the following task.
+Then, if you do identify objects and are able to make use of the depth mapping image, use the depth mapping outlines to understand the relative distances of the objects. 
 
 Your job is to describe only what's important based on their question**for immediate awareness, visual assitance, or navigation**.
 - Mention nearby obstacles or objects directly in front.

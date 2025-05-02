@@ -3,30 +3,21 @@ import os
 import time
 
 # Create directories if they don't exist
-if not os.path.exists('left_27'):
-    os.makedirs('left_27')
-if not os.path.exists('right_27'):
-    os.makedirs('right_27')
+if not os.path.exists('left'):
+    os.makedirs('left')
+if not os.path.exists('right'):
+    os.makedirs('right')
 
 # Initialize the cameras
-left_camera = cv2.VideoCapture(0)  # Adjust index if needed
-right_camera = cv2.VideoCapture(1)  # Adjust index if needed
+left_camera = cv2.VideoCapture(2)  # Adjust index if needed
+right_camera = cv2.VideoCapture(0)  # Adjust index if needed
 
 # Set resolution for both cameras
-width, height = 1280, 720
+width, height = 1920, 1080
 left_camera.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 left_camera.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 right_camera.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 right_camera.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-
-# # Configure the cameras
-# config = {"format": 'RGB888', "size": (1920, 1080)}
-# left_camera.configure(left_camera.create_preview_configuration(main=config))
-# right_camera.configure(right_camera.create_preview_configuration(main=config))
-
-# Start the cameras
-# left_camera.start()
-# right_camera.start()
 
 # Allow time for the cameras to warm up
 time.sleep(2)
@@ -48,8 +39,8 @@ while True:
     key = cv2.waitKey(1) & 0xFF
     if key == ord('c'):
         # Save images
-        cv2.imwrite(f'left_27/image_{image_count:02d}.jpg', frame_left)
-        cv2.imwrite(f'right_27/image_{image_count:02d}.jpg', frame_right)
+        cv2.imwrite(f'left/image_{image_count:02d}.jpg', frame_left)
+        cv2.imwrite(f'right/image_{image_count:02d}.jpg', frame_right)
         print(f"Saved image pair {image_count}")
         image_count += 1
         time.sleep(delay)  # Wait before next capture
